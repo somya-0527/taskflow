@@ -18,6 +18,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     @Transactional
     public UserResponse register(RegisterRequest request) {
@@ -33,5 +34,15 @@ public class AuthService {
         user.setFullName(request.fullName().trim());
 
         return UserResponse.from(userRepository.save(user));
+    }
+    @Transactional(readOnly = true)
+    public AuthResponse login(LoginRequest request) {
+        String email = request.email().trim().toLowerCase(Locale.ROOT);
+
+        User user = userRepository.findByEmail(email)
+                .filter(u -> passwordEncoder.matches(request.password(), u.getPasswordHash()))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password"));
+
+        return new AuthResponse(jwtService.generateToken(user), "Bearer", jwtService.getExpirationSeconds());
     }
 }
