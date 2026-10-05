@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/taskflow
+    username: taskflow
+    password: taskflow_dev_password
+
+  jpa:
+    hibernate:
+      # 'update' is fine for local dev right now so entities create their own tables while
+      # you're still shaping the schema. This is a deliberate, temporary shortcut - production
+      # code should never use it (Hibernate can guess wrong and silently corrupt a real schema).
+      # We'll replace this with Flyway migrations once the core entities stop changing shape
+      # every day - that's on the roadmap, not skipped by accident.
+      ddl-auto: update
+    show-sql: true
+
+logging:
+  level:
+    com.taskflow: DEBUG
+    org.hibernate.SQL: DEBUG

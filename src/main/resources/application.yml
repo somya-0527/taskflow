@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: taskflow-backend
+  profiles:
+    active: dev
+
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+server:
+  port: 8080
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+app:
+  jwt:
+    # Dev-only fallback secret so the app runs out of the box. NEVER use this default
+    # outside local dev - set the real JWT_SECRET env var for anything shared/deployed.
+    # HMAC-SHA256 needs a key of at least 32 bytes - this one is padded well past that.
+    secret: ${JWT_SECRET:dev-only-secret-change-me-before-deploying-this-anywhere-real-32bytes}
+    expiration-ms: 3600000   # 1 hour
